@@ -1,4 +1,3 @@
-import java.net.ServerSocket;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -16,7 +15,7 @@ public class MyJDBC {
         System.out.println("Enter SQL query for creating a table");
         stg = in.nextLine();
 
-        while(loop) {
+        while (loop) {
             System.out.println();
             System.out.println("1. Displaying all tables");
             System.out.println("2. Create a new table");
@@ -24,9 +23,6 @@ public class MyJDBC {
             System.out.println("4. Insert a record");
             System.out.println("5. Update a record");
             System.out.println("6. Delete a record");
-            System.out.println("7. Delete a table");
-            System.out.println("8. Exit loop");
-
 
             System.out.print("Enter Choice: ");
             int choice = in.nextInt();
@@ -53,11 +49,8 @@ public class MyJDBC {
                     break;
                 }
                 case 6: {
-                    delete_table();
+                    delete_in_table();
                     break;
-                }
-                case 7:{
-
                 }
                 default: {
                     loop = false;
@@ -90,25 +83,25 @@ public class MyJDBC {
         }
     }
 
-    private static void display_table(){
-        try{
+    private static void display_table() {
+        try {
             String sql = "SELECT * FROM users";
 
             Statement statement = db_connection.createStatement();
             ResultSet result = statement.executeQuery(sql);
 
-            while (result.next()){
+            while (result.next()) {
                 String name = result.getString(2);
                 String email = result.getString("email");
 
                 System.out.println(name + "  " + email);
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             printSQLException(e);
         }
     }
 
-    private static void create_table (){
+    private static void create_table() {
         try {
             System.out.println(stg);
             Statement statement = db_connection.createStatement();
@@ -138,12 +131,6 @@ public class MyJDBC {
         }
     }
 
-    private static void delete_table() {
-    }
-
-    private static void delete_in_table() {
-    }
-
     private static void update_in_table() {
         String sql = "UPDATE users SET id = ?, name = ?, email = ?, country = ?, password = ? WHERE id = 1";
 
@@ -157,6 +144,7 @@ public class MyJDBC {
             statement.setString(5, "rfddf");
 
             int rowsInserted = statement.executeUpdate();
+
             if (rowsInserted > 0) {
                 System.out.println("Existing user was updated successfully!");
             }
@@ -165,6 +153,15 @@ public class MyJDBC {
         }
     }
 
+    private static void delete_in_table() {
+        String sql = "DELETE FROM Users WHERE id = 1";
+        try {
+            PreparedStatement statement = db_connection.prepareStatement(sql);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+    }
 
 
     //exception handling
