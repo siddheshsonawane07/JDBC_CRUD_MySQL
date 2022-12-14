@@ -3,48 +3,69 @@ import java.util.Scanner;
 
 public class MyJDBC {
 
-    private static final String sql_connection = "jdbc:mysql://localhost:3306/java_crud";
+    static final String sql_connection = "jdbc:mysql://localhost:3306/java_crud";
+    static Connection db_connection;
+    static Scanner in = new Scanner(System.in);
+    static String stg;
 
-    private static Connection db_connection;
-
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
 
         database_connection();
+        boolean loop = true;
+        System.out.println("Enter SQL query for creating a table");
+        stg = in.nextLine();
 
-        System.out.println("1. Displaying all tables");
-        System.out.println("2. Create a new table");
-        System.out.println("3. Insert a record");
-        System.out.println("4. Update a record");
-        System.out.println("5. Delete a record");
-        System.out.println("6. Delete a table");
+        while(loop) {
+            System.out.println();
+            System.out.println("1. Displaying all tables");
+            System.out.println("2. Create a new table");
+            System.out.println("3. Insert a record");
+            System.out.println("4. Update a record");
+            System.out.println("5. Delete a record");
+            System.out.println("6. Delete a table");
+            System.out.println("7. Exit loop");
 
-        Scanner in = new Scanner(System.in);
 
-        System.out.print("Enter Choice: ");
-        int choice = in.nextInt();
+            System.out.print("Enter Choice: ");
+            int choice = in.nextInt();
 
-        switch (choice) {
-            case 1: {
-                display_all_tables();
-            }
-            case 2: {
-                create_table();
-            }
-            case 3: {
-                insert_in_table();
-            }
-            case 4: {
-                update_in_table();
-            }
-            case 5: {
-                delete_in_table();
-            }
-            case 6: {
-                delete_table();
+            switch (choice) {
+                case 1: {
+                    display_all_tables();
+                    break;
+                }
+                case 2: {
+                    create_table();
+                    break;
+                }
+                case 3: {
+                    insert_in_table();
+                    break;
+                }
+                case 4: {
+                    update_in_table();
+                    break;
+                }
+                case 5: {
+                    delete_in_table();
+                    break;
+                }
+                case 6: {
+                    delete_table();
+                    break;
+                }
+                case 7:{
+
+                }
+                default: {
+                    loop = false;
+                    break;
+                }
             }
         }
 
     }
+
 
     private static void database_connection() {
         try {
@@ -62,12 +83,21 @@ public class MyJDBC {
             while (rs.next()) {
                 System.out.println(rs.getString(1));
             }
-            db_connection.close();
         } catch (SQLException e) {
             printSQLException(e);
         }
     }
 
+    private static void create_table (){
+        try {
+            System.out.println(stg);
+            Statement statement = db_connection.createStatement();
+            statement.executeUpdate(stg);
+            display_all_tables();
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+    }
 
     private static void delete_table() {
     }
@@ -81,8 +111,6 @@ public class MyJDBC {
     private static void insert_in_table() {
     }
 
-    private static void create_table() {
-    }
 
 
     //exception handling
