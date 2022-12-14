@@ -1,3 +1,4 @@
+import java.net.ServerSocket;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -19,11 +20,12 @@ public class MyJDBC {
             System.out.println();
             System.out.println("1. Displaying all tables");
             System.out.println("2. Create a new table");
-            System.out.println("3. Insert a record");
-            System.out.println("4. Update a record");
-            System.out.println("5. Delete a record");
-            System.out.println("6. Delete a table");
-            System.out.println("7. Exit loop");
+            System.out.println("3. Display table");
+            System.out.println("4. Insert a record");
+            System.out.println("5. Update a record");
+            System.out.println("6. Delete a record");
+            System.out.println("7. Delete a table");
+            System.out.println("8. Exit loop");
 
 
             System.out.print("Enter Choice: ");
@@ -39,15 +41,15 @@ public class MyJDBC {
                     break;
                 }
                 case 3: {
-                    insert_in_table();
+                    display_table();
                     break;
                 }
                 case 4: {
-                    update_in_table();
+                    insert_in_table();
                     break;
                 }
                 case 5: {
-                    delete_in_table();
+                    update_in_table();
                     break;
                 }
                 case 6: {
@@ -88,12 +90,49 @@ public class MyJDBC {
         }
     }
 
+    private static void display_table(){
+        try{
+            String sql = "SELECT * FROM users";
+
+            Statement statement = db_connection.createStatement();
+            ResultSet result = statement.executeQuery(sql);
+
+            while (result.next()){
+                String name = result.getString(2);
+                String email = result.getString("email");
+
+                System.out.println(name + "  " + email);
+            }
+        }catch(SQLException e){
+            printSQLException(e);
+        }
+    }
+
     private static void create_table (){
         try {
             System.out.println(stg);
             Statement statement = db_connection.createStatement();
             statement.executeUpdate(stg);
             display_all_tables();
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+    }
+
+    private static void insert_in_table() {
+        String sql = "INSERT INTO users (name, email, country, password) VALUES (?, ?, ?, ?)";
+
+        try {
+            PreparedStatement statement = db_connection.prepareStatement(sql);
+            statement.setString(1, "Siddhesh");
+            statement.setString(2, "siddheshsonawane17@gmail.com");
+            statement.setString(3, "USA");
+            statement.setString(4, "password");
+
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("A new user was inserted successfully!");
+            }
         } catch (SQLException e) {
             printSQLException(e);
         }
@@ -106,27 +145,24 @@ public class MyJDBC {
     }
 
     private static void update_in_table() {
-    }
+        String sql = "UPDATE users SET id = ?, name = ?, email = ?, country = ?, password = ? WHERE id = 1";
 
-    private static void insert_in_table() {
-        String sql = "INSERT INTO users (name, email, country, password) VALUES (?, ?, ?, ?)";
-
-        PreparedStatement statement = null;
         try {
-            statement = db_connection.prepareStatement(sql);
-            statement.setString(1, "Bill");
-            statement.setString(2, "bill.gates@microsoft.com");
-            statement.setString(3, "USA");
-            statement.setString(4, "password");
+            PreparedStatement statement = db_connection.prepareStatement(sql);
+
+            statement.setString(1, "1");
+            statement.setString(2, "Siddhesh1");
+            statement.setString(3, "temp@gmail.com");
+            statement.setString(4, "UK");
+            statement.setString(5, "rfddf");
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("A new user was inserted successfully!");
+                System.out.println("Existing user was updated successfully!");
             }
         } catch (SQLException e) {
             printSQLException(e);
         }
-
     }
 
 
