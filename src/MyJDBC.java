@@ -109,6 +109,24 @@ public class MyJDBC {
     }
 
     private static void insert_in_table() {
+        String sql = "INSERT INTO users (name, email, country, password) VALUES (?, ?, ?, ?)";
+
+        PreparedStatement statement = null;
+        try {
+            statement = db_connection.prepareStatement(sql);
+            statement.setString(1, "Bill");
+            statement.setString(2, "bill.gates@microsoft.com");
+            statement.setString(3, "USA");
+            statement.setString(4, "password");
+
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("A new user was inserted successfully!");
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+
     }
 
 
