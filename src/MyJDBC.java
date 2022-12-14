@@ -1,14 +1,11 @@
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Scanner;
 
 public class MyJDBC {
 
     private static final String sql_connection = "jdbc:mysql://localhost:3306/java_crud";
 
-    private static Connection database_connection;
+    private static Connection db_connection;
 
     public static void main(String[] args) throws SQLException {
 
@@ -51,9 +48,21 @@ public class MyJDBC {
 
     private static void database_connection() {
         try {
-            Connection connection = DriverManager.getConnection(sql_connection, "root", "Apple@5044");
-            database_connection = connection;
+            db_connection = DriverManager.getConnection(sql_connection, "root", "Apple@5044");
             System.out.println("Connection Successful");
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+    }
+
+    private static void display_all_tables() {
+        try {
+            Statement statement = db_connection.createStatement();
+            ResultSet rs = statement.executeQuery("show tables;");
+            while (rs.next()) {
+                System.out.println(rs.getString(1));
+            }
+            db_connection.close();
         } catch (SQLException e) {
             printSQLException(e);
         }
@@ -75,8 +84,6 @@ public class MyJDBC {
     private static void create_table() {
     }
 
-    private static void display_all_tables() {
-    }
 
     //exception handling
     public static void printSQLException(SQLException ex) {
@@ -118,9 +125,6 @@ public class MyJDBC {
             return true;
 
         // 42Y55: Table already exists in schema
-        if (sqlState.equalsIgnoreCase("42Y55"))
-            return true;
-
-        return false;
+        return sqlState.equalsIgnoreCase("42Y55");
     }
 }
