@@ -64,7 +64,11 @@ public class MyJDBC {
 
     private static void database_connection() {
         try {
+            //The DriverManager provides a basic service for managing a set of JDBC drivers.
+            //attempts to establish a connection to the given database URL
             db_connection = DriverManager.getConnection(sql_connection, "root", "Apple@5044");
+            
+            //A Connection is a session between a Java application and a database. It helps to establish a connection with the database.
             System.out.println("Connection Successful");
         } catch (SQLException e) {
             printSQLException(e);
@@ -73,9 +77,15 @@ public class MyJDBC {
 
     private static void display_all_tables() {
         try {
+            // creates a statement object that can be used to execute SQL queries.
             Statement statement = db_connection.createStatement();
+            
+            //The object of ResultSet maintains a cursor pointing to a row of a table. Initially, cursor points to before the first row.
             ResultSet rs = statement.executeQuery("show tables;");
+            
+            //printing the strings in column no.1 till there is data present in resultSet
             while (rs.next()) {
+           //is used to return the data of specified column index of the current row as String.
                 System.out.println(rs.getString(1));
             }
         } catch (SQLException e) {
@@ -105,6 +115,9 @@ public class MyJDBC {
         try {
             System.out.println(stg);
             Statement statement = db_connection.createStatement();
+            
+            //execute: is used to execute queries that may return multiple results.
+            //executeUpdate: is used to execute specified query, it may be create, drop, insert, update, delete etc.
             statement.executeUpdate(stg);
             display_all_tables();
         } catch (SQLException e) {
@@ -116,7 +129,14 @@ public class MyJDBC {
         String sql = "INSERT INTO users (name, email, country, password) VALUES (?, ?, ?, ?)";
 
         try {
+            //The PreparedStatement interface is a subinterface of Statement. It is used to execute parameterized query.
+            // we are passing parameter (?) for the values. It's value will be set by calling the setter methods of PreparedStatement
+            //Improves performance: The performance of the application will be faster if you use PreparedStatement interface because query is compiled only once.
+
             PreparedStatement statement = db_connection.prepareStatement(sql);
+            
+            //setString: sets the String value to the given parameter index.
+
             statement.setString(1, "Siddhesh");
             statement.setString(2, "siddheshsonawane17@gmail.com");
             statement.setString(3, "USA");
